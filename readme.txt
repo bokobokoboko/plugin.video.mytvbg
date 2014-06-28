@@ -17,6 +17,7 @@ How to install:
 	on AppleTV long press Menu on the remote control
 
 
+
 Currently supported functions are:
  1. On-line TV chanels
  2. Back in time offseted TV chanels - fixed offsets, max -12 hours
@@ -37,3 +38,8 @@ In so mentioned contries you need to use services from VOYO:
  http://voyo.si/
  http://voyo.sk/
  http://voyo.cz/
+
+More details for MyTV:
+ http://mytv.bg
+ http://mytv.bg/terms
+ http://mytv.bg/faq
