@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.mytvbg" name="MyTV.BG" version="1.0.4" provider-name="boris.todorov@gmail.com">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.xbmcswift" version="0.0.1"/>    
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <language>en</language>
+    <summary lang="en">Video plugin for MyTV.bg http://www.mytv.bg/</summary>
+    <description lang="en">
+    This plugin provides interface to tv streams from MyTV.bg.
+    This plugin was initialy based on Nettera.tv plugin from mr.olix@gmail.com
+
+    Note: MyTV.bg account is required.</description>   
+    <disclaimer lang="en">You have to sign up and pay to access MyTV.bg TV streams.
+     Please check details on http://mytv.bg/terms  and  http://mytv.bg/faq
+    </disclaimer>
+    <website></website>
+    <email>boris.todorov@gmail.com</email>
+  </extension>
+</addon>
