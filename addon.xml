@@ -13,7 +13,7 @@
     <summary lang="en">Video plugin for MyTV.bg http://www.mytv.bg/</summary>
     <description lang="en">
 This plugin provides interface to tv streams from MyTV.bg.
-This plugin was initialy based on Nettera.tv plugin from mr.olix@gmail.com
+Note: MyTV.bg account is required.
 
 Currently supported functions are:
  1. On-line TV chanels
@@ -26,7 +26,8 @@ Not supported functions (TODO list)
  3. Flexable time shifts with minutes precision
  4. Full TV program for all TV chanels - http://mytv.bg/tv_program
 
-Note: MyTV.bg account is required.</description>   
+This plugin was initialy based on Nettera.tv plugin from mr.olix@gmail.com
+</description>   
     <disclaimer lang="en">You have to sign up and pay to access MyTV.bg TV streams.
 Please check details on http://mytv.bg/terms  and  http://mytv.bg/faq
  
