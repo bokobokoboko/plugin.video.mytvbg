@@ -12,12 +12,33 @@
     <language>en</language>
     <summary lang="en">Video plugin for MyTV.bg http://www.mytv.bg/</summary>
     <description lang="en">
-    This plugin provides interface to tv streams from MyTV.bg.
-    This plugin was initialy based on Nettera.tv plugin from mr.olix@gmail.com
+This plugin provides interface to tv streams from MyTV.bg.
+This plugin was initialy based on Nettera.tv plugin from mr.olix@gmail.com
 
-    Note: MyTV.bg account is required.</description>   
+Currently supported functions are:
+ 1. On-line TV chanels
+ 2. Back in time offseted TV chanels - fixed offsets, max -12 hours
+ 3. TV serials
+
+Not supported functions (TODO list)
+ 1. Recorded show programs - http://mytv.bg/broadcasts
+ 2. News - http://mytv.bg/news
+ 3. Flexable time shifts with minutes precision
+ 4. Full TV program for all TV chanels - http://mytv.bg/tv_program
+
+Note: MyTV.bg account is required.</description>   
     <disclaimer lang="en">You have to sign up and pay to access MyTV.bg TV streams.
-     Please check details on http://mytv.bg/terms  and  http://mytv.bg/faq
+Please check details on http://mytv.bg/terms  and  http://mytv.bg/faq
+ 
+This plugin currently can be used only outside Bulgaria. http://mytv.bg/countries
+
+This plugin will not work inside Bulgaria, Romania, Hrvatska, Slovakia, Slovenia, Czech republic.
+In so mentioned contries you need to use services from VOYO:
+ http://voyo.bg/
+ http://voyo.ro/
+ http://voyo.si/
+ http://voyo.sk/
+ http://voyo.cz/
     </disclaimer>
     <website></website>
     <email>boris.todorov@gmail.com</email>
