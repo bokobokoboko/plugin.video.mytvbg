@@ -133,7 +133,15 @@ class mytv:
             #open page again
             handle = urlopen(req)
             htmlstr = handle.read()
-        self.updateCookie()
+            startpoint = htmlstr.find(self.ISLOGGEDINSTR)
+            if (0 != -1):
+              dialog = xbmcgui.Dialog()
+              dialog.ok("Error", 'Login error! Wrong username or password for MyTV.bg'  )
+        try:
+         self.updateCookie()
+        except:
+          dialog = xbmcgui.Dialog()
+          dialog.ok("Error", 'Failed to update session coockie.\nLogin error! Check username/password for MyTV.bg'  )
         #self.__log('htmlstr: ' + htmlstr)
         self.__log('Finished openSite: ' + theurl)
         return htmlstr
@@ -355,7 +363,7 @@ class mytv:
         self.__log('Finished getTVResolutions')
         return items
  
-
+ 
 #    returns the stream to live TV
     def getTVStream(self,tvstation_params):
         self.__log('Start getTVStream')
@@ -543,9 +551,9 @@ class TimeShiftDialog( AddonDialogWindow ):
         self.button = Button('Start')
         self.placeControl(self.button, 11, 2,2,8)
         self.connect(self.button, self.onClickButton )      
-
         self.MyTVbg = mytv(tv_username, tv_password)
         self.onSelectionChange() # get title,image,rtime for offset=0
+ 
 
         self.boxTime.setText(  self.time  )
         self.boxTitle.setText( self.title)
@@ -556,25 +564,32 @@ class TimeShiftDialog( AddonDialogWindow ):
         self.selOffset = self.list.getSelectedPosition()
         self.timeStamp = time.time() - 3600*self.selOffset
         self.time      = self.timeStampToString(self.timeStamp)
+        dialog = xbmcgui.Dialog()
+
         chanel_info = mytv.MAINURL + '/channels/' + self.ch_url + '&offset=%d' % self.selOffset
         #xbmc.log( 'Time Offset Dialog (1)   ' +  chanel_info + ' sel=%d' % self.selOffset)
         res = self.MyTVbg.getTVChanelInfo( self.MyTVbg.openContentStream(chanel_info,'')  , self.selOffset) 
+
         #xbmc.log( 'Time Offset Dialog (2)  %s %s %s  ' %  res[0] )
         if (0 != len(res[0][0])) :
             self.title     = '[' + res[0][2] +'] ' +res[0][0]
             self.pic = res[0][1]
             self.boxTime.setText(  self.time  )
             self.boxTitle.setText( self.title)
+            try:
+             resource = urllib.urlopen(self.pic)
+             output = open( os.path.join(_tempdir,'mytv-bg-tmp%d.jpg' %  self.selOffset),"wb")
+             output.write(resource.read())
+             output.close()
+             self.image.setImage( os.path.join(_tempdir,'mytv-bg-tmp%d.jpg' %  self.selOffset) )
+            except:
+             dialog.ok("Error", 'Error opening chanel snapshot image.\n'+self.pic+'\nCheck login credentials.') 
+             self.start = 0
+             self.close()
 
-            resource = urllib.urlopen(self.pic)
-            output = open( os.path.join(_tempdir,'mytv-bg-tmp%d.jpg' %  self.selOffset),"wb")
-            output.write(resource.read())
-            output.close()
-            self.image.setImage( os.path.join(_tempdir,'mytv-bg-tmp%d.jpg' %  self.selOffset) )
         else:
             self.title = 'No title (DVR stream)'
             self.boxTitle.setText( self.title)
-           
 
             
         #xbmc.log('%s class: %s' % ('Time Offset Dialog  (3 )mytv-bg-tmp%d.jpg' % self.selOffset, 'tmp pic:'+self.pic) )
@@ -619,6 +634,7 @@ def playLiveStream(tv_username, tv_password, tvstation_params):
         selectedPosition = MyOffset.selOffset
         selectedTime = MyOffset.timeStamp
         del MyOffset
+
     except:
         xbmc.log('PyXbmcT not supported. Enable to display timeOffsets')
         ofsets = []
