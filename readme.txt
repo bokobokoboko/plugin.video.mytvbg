@@ -17,7 +17,7 @@ How to install:
 	on AppleTV long press Menu on the remote control
 
 
-Currently supported fetures are:
+Currently supported functions are:
  1. On-line TV chanels
  2. Back in time offseted TV chanels - fixed offsets, max -12 hours
  3. TV serials
