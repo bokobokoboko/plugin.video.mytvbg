@@ -1,6 +1,6 @@
 Readme for XMBC mytvbg plugin created boris.todorov@gmail.com
 
-I created this addon to watch MyTV.bg (Voyo) on my Ubuntu based madia station.
+I created this addon to watch MyTV.bg (Voyo) on my Ubuntu media station.
 This plugin is based on neterratv  plugin  by  Mr.Olix@gmail.com.
 I should mention that this is the first time I use PHYTON, so as you can imagine it is not perfect.
 
