@@ -555,13 +555,18 @@ class TimeShiftDialog( AddonDialogWindow ):
         self.button = Button('Start')
         self.placeControl(self.button, 11, 2,2,8)
         self.connect(self.button, self.onClickButton )      
+        
+        self.button.setNavigation(self.list, self.list, self.list, self.list)
+        self.list.controlLeft(self.button)
+        self.list.controlRight(self.button)
+        
         self.MyTVbg = mytv(tv_username, tv_password)
         self.onSelectionChange() # get title,image,rtime for offset=0
  
-
         self.boxTime.setText(  self.time  )
         self.boxTitle.setText( self.title)
 
+        self.setFocus(self.button)
 
  
     def onSelectionChange(self):
