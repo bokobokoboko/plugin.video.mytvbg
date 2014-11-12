@@ -206,6 +206,8 @@ class mytv:
         for line in lines:
             if ( line.find('" class="article')!=-1 ):
                 text = text  + line                 
+            if ( line.find('<h2 itemprop="name">')!=-1 ):
+                text = text  + line                 
         self.__log('Serials List Links: ' + text)
         links = text.split('<a')
         items = []
@@ -214,7 +216,7 @@ class mytv:
                 if ( lnk.find('" class="article')!=-1 ):
                      urlStartPoint = lnk.find('href="') +6
                      urlEndPoint   = lnk.find('"' , urlStartPoint) 
-                     nameStartPoint  = lnk.find('<h2>' ,urlEndPoint) +4
+                     nameStartPoint  = lnk.find('"name">' ,urlEndPoint) +7
                      nameEndPoint    = lnk.find('</h2>' , nameStartPoint) 
                      ser_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
                      ser_name    = lnk[nameStartPoint:nameEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
@@ -245,8 +247,8 @@ class mytv:
                 if ( lnk.find('href="')!=-1 ):
                      urlStartPoint = lnk.find('href="') +6
                      urlEndPoint   = lnk.find('"' , urlStartPoint) 
-                     nameStartPoint  = lnk.find('>' ,urlEndPoint) +1
-                     nameEndPoint    = lnk.find('</a>' , nameStartPoint) 
+                     nameStartPoint  = lnk.find('itemprop=' ,urlEndPoint) +16
+                     nameEndPoint    = lnk.find('</span>' , nameStartPoint) 
                      ses_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
                      ses_name    = lnk[nameStartPoint:nameEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
 
@@ -278,14 +280,16 @@ class mytv:
                 if ( lnk.find('href="')!=-1 ):
                      urlStartPoint   = lnk.find('href="'                   ) + 6
                      urlEndPoint     = lnk.find('"'       , urlStartPoint  ) 
-                     nameStartPoint  = lnk.find('<p>'     , urlEndPoint    ) + 3 
-                     nameEndPoint    = lnk.find('</p>'    , nameStartPoint ) 
+                     nameStartPoint  = lnk.find('itemprop="name'     , urlEndPoint    ) + 16
+                     nameEndPoint    = lnk.find('<span'    , nameStartPoint ) 
+                     nameStartPoint2  = nameEndPoint + 26
+                     nameEndPoint2    = lnk.find('</span>'    , nameStartPoint ) 
                      titleStartPoint = lnk.find('title="' , nameEndPoint   ) + 7 
                      titleEndPoint   = lnk.find('"'       , titleStartPoint) 
 
 
                      ses_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
-                     ses_name  = lnk[nameStartPoint:nameEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
+                     ses_name  = lnk[nameStartPoint:nameEndPoint] + lnk[nameStartPoint2:nameEndPoint2]#.decode('unicode_escape','ignore').encode('utf-8')
                      ses_title = lnk[titleStartPoint:titleEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
 
                      items.append((ses_name + ' - ' + ses_title, ses_url ))
