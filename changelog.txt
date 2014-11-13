@@ -6,3 +6,6 @@ Changelog for XBMC mytvbg plugin created by boris.todorov@gmail.com
 1.0.4
 - working version. first real complete proof of concept
 - online channels, time offsets, tv series
+
+2.1.1
+- follow the changes in HTML 
