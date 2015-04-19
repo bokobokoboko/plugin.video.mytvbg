@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#     Copyright (C) 2013-2014 mr.olix@gmail.com, boris.todorov#gmail.com
+#     Copyright (C) 2013-2015 mr.olix@gmail.com, boris.todorov#gmail.com & contributors
 #      
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -117,15 +117,15 @@ def main_menu():
     __log('main_menu start')
         
     items=[]
-    items.append({'label': u'TV chanels - live',
+    items.append({'label': u'Телевизии - на живо, високо качество',
+                  'url': plugin.url_for('tvList',id_type='live_direct')})    
+    items.append({'label': u'Телевизии - избор на качество и време',
                   'url': plugin.url_for('tvList',id_type='live')})
-    items.append({'label': u'TV series - recorded',
+    items.append({'label': u'Сериали',
                   'url': plugin.url_for('tvList',id_type='series')})
    
     __log('main_menu finished')
     return plugin.add_items(items)
-
-
 
 #    creates main level menu list on selected id_type=(live|series)
 @plugin.route('/tvList/<id_type>')
@@ -140,6 +140,12 @@ def tvList(id_type):
             for item in menulist:
                 items.append({'label': item[0],
                               'url':   plugin.url_for('tvListResolution',ch_url=item[1]) })
+    if id_type =='live_direct':  #get a list with the directly accessible TV stations
+        menulist=mytvbg.showTVStations(plugin.get_setting('username'), plugin.get_setting('password'))        
+        if menulist:         
+            for item in menulist:
+                items.append({'label': item[0],
+                              'url':   plugin.url_for('directtvstation_playtv', ch_url=item[1]) }) 
     if id_type =='series':#get a list with TV serials
         menulist=mytvbg.showTVSerials(plugin.get_setting('username'), plugin.get_setting('password'))        
         if menulist:         
@@ -147,10 +153,11 @@ def tvList(id_type):
                 items.append({'label': item[0],
                               'url':   plugin.url_for('tvListSerialSeasons',ser_url=item[1]) })                     
     if not menulist:
-            items.append({'label': 'Error - no entries found',
+            items.append({'label': 'Грешка - не са намерени елементи',
                           'url': 'error'})                
     __log('tvlist finished')
     return plugin.add_items(items)
+
 
 #  creates second level menu LiveTV - list of resolutions for specific chanel
 @plugin.route('/tvListResolution/<ch_url>')
@@ -168,7 +175,7 @@ def tvListResolution(ch_url):
                               'url':   plugin.url_for('tvstation_playtv', tvstation_params=item[1]) } )       
                   
     else:
-         items.append({'label': 'Error - no entries found',
+         items.append({'label': 'Грешка - не са намерени елементи',
                        'url': 'error'})                
     __log('tvListResolution finished')
     return plugin.add_items(items)
@@ -188,7 +195,7 @@ def tvListSerialSeasons(ser_url):
                               'url':   plugin.url_for('tvListSeasonEpisodes', ses_url=item[1]) } )       
                   
     else:
-         items.append({'label': 'Error - no entries found',
+         items.append({'label': 'Грешка - не са намерени елементи',
                        'url': 'error'})                
     __log('tvListSerialSeasons finished')
     return plugin.add_items(items)
@@ -212,7 +219,7 @@ def tvListSeasonEpisodes(ses_url):
                 __log('tvListSeasonEpisodes start  '+item[1])     
                   
     else:
-         items.append({'label': 'Error - no entries found',
+         items.append({'label': 'Грешка - не са намерени елементи',
                        'url': 'error'})                
     __log('tvListSeasonEpisodes finished')
     return plugin.add_items(items)
@@ -225,7 +232,15 @@ def tvstation_playtv(tvstation_params):
     
     __log('tvstation_playtv started with string=%s' % tvstation_params)
            
-    mytvbg.playLiveStream(plugin.get_setting('username'), plugin.get_setting('password'),tvstation_params)    
+    mytvbg.playLiveStream(plugin.get_setting('username'), plugin.get_setting('password'),tvstation_params) 
+
+#    plays directly the select live TV
+@plugin.route('/directtvstation_playtv/<ch_url>')
+def directtvstation_playtv(ch_url):
+    
+    __log('directtvstation_playtv started with string=%s' % ch_url)
+           
+    mytvbg.playDirectLiveStream(plugin.get_setting('username'), plugin.get_setting('password'),ch_url)   
 
 #    plays the select episode from series library
 @plugin.route('/tvSeriePlayEpisode/<episode_params>')
