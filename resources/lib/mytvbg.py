@@ -360,7 +360,7 @@ class mytv:
                         self.__log('Found High')
                         url_params = ch_url + '?&q=' + res_id
                 else: 
-                    self.__log('Found High')
+                    self.__log('No video qualty parameters found')
                     url_params = ch_url + '?' 
    
         self.__log('Finished getHighestTVResolution with url_params: ' + url_params)

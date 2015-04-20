@@ -1,4 +1,4 @@
-Readme for XMBC mytvbg plugin created boris.todorov@gmail.com
+Readme for Kodi (XMBC) mytvbg plugin created boris.todorov@gmail.com
 
 I created this addon to watch MyTV.bg (Voyo) on my Ubuntu media station.
 This plugin is based on neterratv  plugin  by  Mr.Olix@gmail.com.
