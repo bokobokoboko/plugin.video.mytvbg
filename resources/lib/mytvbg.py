@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#     Copyright (C) 2013-2014 mr.olix@gmail.com boris.todorov#gmail.com
+#     Copyright (C) 2013-2015 mr.olix@gmail.com boris.todorov#gmail.com & contributors
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import urlparse
 import time
 
 # set debug to generate log entries
-DEBUG = None
+DEBUG = False
 
 #libname
 LIBNAME = 'mytvbg'
@@ -136,7 +136,7 @@ class mytv:
             startpoint = htmlstr.find(self.ISLOGGEDINSTR)
             if (0 != -1):
               dialog = xbmcgui.Dialog()
-              dialog.ok("Error", 'Login error! Wrong username or password for MyTV.bg'  )
+              dialog.ok("Error", 'Грешно потребителско име или парола за MyTV.bg'  )
         try:
          self.updateCookie()
         except:
@@ -303,7 +303,7 @@ class mytv:
 
 #    returns list with TV stations/chanels 
     def getTVStations(self, html):        
-        self.__log('Start getTVStations')
+        self.__log('Start getTVStations. Paramter html is: ' + html)
         text  = html
         text  = text.replace('\r','')
         lines = text.split('\n')
@@ -334,6 +334,37 @@ class mytv:
         self.__log('Finished getTVStations')
         return items
 
+# returns the highest possible resolution for a specific channel 
+    def getHighestTVResolution(self, html, ch_url):        
+        self.__log('Start getHighestTVResolution')
+        text  = html
+        text  = text.replace('\r','')
+        lines = text.split('\n')
+        text = ''
+        for line in lines:
+            if ( line.find('/channels/'+ch_url)!=-1 and line.find('q=')!=-1):
+                text = text  + line                 
+        self.__log('Res List: ' + text)
+        links = text.split('<a')
+        if links:
+            for lnk in links:
+                url_params = ''
+                if ( lnk.find('q=')!=-1):
+                    startpoint = lnk.find('q=') +2
+                    endpoint   = lnk.find('"' , startpoint) 
+                    res_id     = lnk[startpoint:endpoint].decode('unicode_escape','ignore').encode('utf-8')
+                    if ( res_id=='hd' ):
+                        self.__log('Found HD')
+                        url_params = ch_url + '?&q=' + res_id
+                    if ( res_id=='high' and url_params == '' ):				
+                        self.__log('Found High')
+                        url_params = ch_url + '?&q=' + res_id
+                else: 
+                    self.__log('No video qualty parameters found')
+                    url_params = ch_url + '?' 
+   
+        self.__log('Finished getHighestTVResolution with url_params: ' + url_params)
+        return url_params
 
 
 # returns list of resolutions for specific channel 
@@ -365,8 +396,7 @@ class mytv:
 
    
         self.__log('Finished getTVResolutions')
-        return items
- 
+        return items 
  
 #    returns the stream to live TV
     def getTVStream(self,tvstation_params):
@@ -555,13 +585,18 @@ class TimeShiftDialog( AddonDialogWindow ):
         self.button = Button('Start')
         self.placeControl(self.button, 11, 2,2,8)
         self.connect(self.button, self.onClickButton )      
+        
+        self.button.setNavigation(self.list, self.list, self.list, self.list)
+        self.list.controlLeft(self.button)
+        self.list.controlRight(self.button)
+        
         self.MyTVbg = mytv(tv_username, tv_password)
         self.onSelectionChange() # get title,image,rtime for offset=0
  
-
         self.boxTime.setText(  self.time  )
         self.boxTitle.setText( self.title)
 
+        self.setFocus(self.button)
 
  
     def onSelectionChange(self):
@@ -661,6 +696,31 @@ def playLiveStream(tv_username, tv_password, tvstation_params):
     log('Finished playLiveStream')
     html=''
     return 
+
+#    plays live stream directly without tomeshift selection
+def playDirectLiveStream(tv_username, tv_password, ch_url):
+    log('Start playDirectLiveStream')
+    MyTVbg = mytv(tv_username, tv_password)    
+    stream_url= ''
+    ch_details = MyTVbg.openContentStream((mytv.MAINURL + '/channels/' +ch_url),'')
+    tvstation_params = MyTVbg.getHighestTVResolution(ch_details, ch_url)
+    
+    if (ch_url == 'newschannel' or ch_url == 'bta'): # not real live streams, no offset parameters
+        stream_url=MyTVbg.getTVStream( tvstation_params )
+        st = urllib.unquote(stream_url).decode('utf8') 
+        #xbmc.log('%s %s' % (stream_url, st) )
+        xbmc.Player().play(st)
+    else:
+        stream_url=MyTVbg.getTVStream(tvstation_params + ('&offset=0')  )
+        stream_url = stream_url[0:stream_url.find('&time=')] 
+        stream_url = stream_url  +  ('&time=0&t1=0&t2=10000') 
+        xbmc.Player().play(stream_url)    
+    
+    log('URL: ' + stream_url)
+    log('Finished playDirectLiveStream')
+    html=''
+    return 
+
 
 
 #    play episode stream
