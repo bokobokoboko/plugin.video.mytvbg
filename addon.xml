@@ -9,7 +9,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <language>en</language>
+    <language>bg</language>
     <summary lang="en">Video plugin for MyTV.bg http://www.mytv.bg/</summary>
     <summary lang="bg">Видео плъгин за MyTV.bg http://www.mytv.bg/</summary>
     <description lang="en">
