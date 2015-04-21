@@ -11,6 +11,7 @@
     <platform>all</platform>
     <language>en</language>
     <summary lang="en">Video plugin for MyTV.bg http://www.mytv.bg/</summary>
+    <summary lang="bg">Видео плъгин за MyTV.bg http://www.mytv.bg/</summary>
     <description lang="en">
 This plugin provides interface to tv streams from MyTV.bg.
 Note: MyTV.bg account is required.
@@ -28,6 +29,10 @@ Not supported functions (TODO list)
 
 This plugin was initialy based on Nettera.tv plugin from mr.olix@gmail.com
 </description>   
+    <description lang="bg">
+Този плъгин предлага достъп до стриймовете на MyTV.bg (канали на живо и сериали).
+За да го ползвате е нужна активна MyTV.bg регистрация.
+</description>  
     <disclaimer lang="en">You have to sign up and pay to access MyTV.bg TV streams.
 Please check details on http://mytv.bg/terms  and  http://mytv.bg/faq
  
@@ -40,6 +45,9 @@ In so mentioned contries you need to use services from VOYO:
  http://voyo.si/
  http://voyo.sk/
  http://voyo.cz/
+    </disclaimer>
+    <disclaimer lang="bg">Нужни са активни потребителско име и парола.
+Може да се ползва само извън България. За детайли виж http://mytv.bg/countries
     </disclaimer>
     <website></website>
     <email>boris.todorov@gmail.com</email>
