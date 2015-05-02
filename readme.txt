@@ -29,7 +29,6 @@ Not supported functions (TODO list)
  
 This plugin currently can be used only outside Bulgaria. http://mytv.bg/countries
 
-This plugin will not work inside Bulgaria!
 More details for MyTV:
  http://mytv.bg
  http://mytv.bg/terms

@@ -14,3 +14,6 @@ Changelog for XBMC mytvbg plugin created by boris.todorov@gmail.com
 
 1.0.6
 - Additional channel list from which the live streams can be started directly (no offset, in the highest available quality)
+
+1.0.7
+- Напасване към промени на сайта, които бяха счупили плъгина. Стриймовете вървят отново.
