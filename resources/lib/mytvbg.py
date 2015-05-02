@@ -408,12 +408,12 @@ class mytv:
            key_pos    = html.find('video_key')
            start      = html.find('"', key_pos  ) + 1
            end        = html.find('"', start  )
-           video_key  = html[start:end] #    # --post-data 'video_key=ch_btvhd_high_dvr#1402361201'    http://mytv.bg/player_config/config.js 
+           video_key  = html[start:end] #    # --post-data 'video_key=ch_btvhd_high_dvr#1402361201'    http://mytv.bg/player_config_g/config
            #xbmc.log("vk - " + video_key )
            #xbmc.log("lt - %d" % time.time() )
            urlopen = urllib2.urlopen 
            request = urllib2.Request
-           the_url = self.MAINURL + '/player_config/config.js'
+           the_url = self.MAINURL + '/player_config_g/config'
            txdata = 'video_key=' + video_key  
            req = request(the_url, txdata, self.USERAGENT)
            handle = urlopen(req)     
@@ -436,11 +436,10 @@ class mytv:
            start      = html.find('"', key_pos  ) + 1
            end        = html.find('"', start  )
            #To DO: add current time
-           video_key  = html[start:end]       # --post-data 'video_key=614f73fvkgny'    http://mytv.bg/player_config/config.js 
-
+           video_key  = html[start:end]       # --post-data 'video_key=614f73fvkgny'    http://mytv.bg/player_config_g/config
            urlopen = urllib2.urlopen 
            request = urllib2.Request
-           the_url = self.MAINURL + '/player_config/config.js'
+           the_url = self.MAINURL + '/player_config_g/config'
            txdata = 'video_key=' + video_key  
            req = request(the_url, txdata, self.USERAGENT)
            handle = urlopen(req)     
