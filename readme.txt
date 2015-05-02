@@ -16,8 +16,6 @@ How to install:
 	For this select the addon in the list and the PC use right mouse button 
 	on AppleTV long press Menu on the remote control
 
-
-
 Currently supported functions are:
  1. On-line TV chanels
  2. Back in time offseted TV chanels - fixed offsets, max -12 hours
@@ -30,14 +28,6 @@ Not supported functions (TODO list)
  4. Full TV program for all TV chanels - http://mytv.bg/tv_program
  
 This plugin currently can be used only outside Bulgaria. http://mytv.bg/countries
-
-This plugin will not work inside Bulgaria, Romania, Hrvatska, Slovakia, Slovenia, Czech republic.
-In so mentioned contries you need to use services from VOYO:
- http://voyo.bg/
- http://voyo.ro/
- http://voyo.si/
- http://voyo.sk/
- http://voyo.cz/
 
 More details for MyTV:
  http://mytv.bg
