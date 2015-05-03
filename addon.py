@@ -159,7 +159,7 @@ def tvList(id_type):
         if menulist:         
             for item in menulist:
                 items.append({'label': item[0],
-                              'url':   plugin.url_for('tvListSerialSeasons',ser_url=item[1]) })                     
+                              'url':   plugin.url_for('tvListSeasonEpisodesTVs',ses_url=item[1]) })                     
     if not menulist:
             items.append({'label': 'Грешка - не са намерени елементи',
                           'url': 'error'})                
@@ -233,6 +233,29 @@ def tvListSeasonEpisodes(ses_url):
     return plugin.add_items(items)
 
     
+#  creates third level menu for recordered TV series - list all episodes  for specified colection form TVs
+@plugin.route('/tvListSeasonEpisodesTVs/<ses_url>')
+def tvListSeasonEpisodesTVs(ses_url):
+    __log('tvListSeasonEpisodesTVs start  ')
+    #get a list with the TV stations
+    menulist=[]
+    items=[]
+
+    menulist=mytvbg.showTVSeasonEpisodesTVs(plugin.get_setting('username'), plugin.get_setting('password'), ses_url)        
+    if menulist:         
+         for item in menulist:
+                #tvstation_params = ch_url + '?&offset=0&q=' + item[1]
+                items.append({'label': item[0],
+                              'url':   plugin.url_for('tvSeriePlayEpisodeTVs', episode_params=item[1]) } )  
+               # __log('tvListSeasonEpisodesTVs start  '+item[1])     
+                  
+    else:
+         items.append({'label': 'Грешка - не са намерени елементи',
+                       'url': 'error'})                
+    __log('tvListSeasonEpisodesTVs finished')
+    return plugin.add_items(items)
+
+    
 
 #    plays the select live TV
 @plugin.route('/tvstation_playtv/<tvstation_params>')
@@ -258,6 +281,13 @@ def tvSeriePlayEpisode(episode_params):
            
     mytvbg.playEpisodeStream(plugin.get_setting('username'), plugin.get_setting('password'),episode_params)    
 
+#    plays the select episode from series library - TVS
+@plugin.route('/tvSeriePlayEpisodeTVs/<episode_params>')
+def tvSeriePlayEpisodeTVs(episode_params):
+    
+    __log('tvSeriePlayEpisode started with string=%s' % episode_params)
+           
+    mytvbg.playEpisodeStreamTVs(plugin.get_setting('username'), plugin.get_setting('password'),episode_params)    
 
 
 def __add_items(entries):
