@@ -27,7 +27,7 @@ import urlparse
 import time
 
 # set debug to generate log entries
-DEBUG = False
+DEBUG = True
 
 #libname
 LIBNAME = 'mytvbg'
@@ -342,6 +342,48 @@ class mytv:
         self.__log('Finished getTVSeasonEpisodes')
         return items
 
+#    returns list with Seasons  Episodes
+    def getTVSeasonEpisodesTVs(self, html):        
+        self.__log('Start getTVSeasonEpisodesTVs')
+        #self.__log('html')
+        text  = html
+        text  = text.replace('\r','')
+        text  = text.replace('\n',' ') 
+        text  = text.replace('<span class="se tick2"></span>','') # fix idiotic html
+        lines = text.split('<a class="sparticle"')
+        text = ''
+        for line in lines:
+            #self.__log('l: ' + line +'\n\n\n')
+            if ( line.find('data-key')!=-1 ):
+                text = text  + '<aaa>' + line                 
+        #self.__log('Colection Episodes List Links: ' + text)
+        links = text.split('<aaa>')
+        items = []
+        if links:
+            for lnk in links:
+                if ( lnk.find('data-index')!=-1 ):
+                     urlStartPoint   = lnk.find('data-key="'                   ) +10
+                     urlEndPoint     = lnk.find('"'       , urlStartPoint  ) 
+                     nameStartPoint  = lnk.find('"first-title">'     , urlEndPoint    ) + 14
+                     nameEndPoint    = lnk.find('</span'    , nameStartPoint ) 
+                     nameStartPoint2 = lnk.find('<br'     , nameEndPoint    ) +6
+                     nameEndPoint2   = lnk.find('</span>'  , nameStartPoint2 ) 
+
+                     #self.__log(lnk)
+                     ses_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
+                     ses_name  = lnk[nameStartPoint:nameEndPoint] +' - ' + lnk[nameStartPoint2:nameEndPoint2]#.decode('unicode_escape','ignore').encode('utf-8')
+
+                     items.append((ses_name , ses_url ))
+                     self.__log(ses_url + ' ' + ses_name)
+            
+ 
+        if 0 == len(items):
+            items.append(('Error no TV Episode items found', 'Error'))   
+
+        self.__log('Finished getTVSeasonEpisodesTVs')
+        return items
+
+
 #    returns list with TV stations/chanels 
     def getTVStations(self, html):        
         self.__log('Start getTVStations. Paramter html is: ' + html)
@@ -442,7 +484,7 @@ class mytv:
 #    returns the stream to live TV
     def getTVStream(self,tvstation_params):
         self.__log('Start getTVStream')
-        self.__log('TVStream:'+self.MAINURL +tvstation_params )
+        self.__log('TVStream:'+self.MAINURL +'/channels/' +tvstation_params )
         html = self.openContentStream(self.MAINURL + '/channels/' + tvstation_params ,'')
         clip_url = ''
         if ( html.find('video_key')!=-1 ):
@@ -465,6 +507,26 @@ class mytv:
            end        = html.find('\'', start  )
            clip_url   = html[start:end]
         self.__log('Finished getTVStream :' +clip_url)
+        return clip_url
+
+#    returns the stream based on data-key and data-index
+    def getTVStreamDirect(self,tvstation_params):
+        self.__log('Start getTVStreamDirect ' + tvstation_params)
+        clip_url = ''
+        urlopen = urllib2.urlopen 
+        request = urllib2.Request
+        the_url = self.MAINURL + '/player_config_g/config?video_key=ch_'+ tvstation_params
+        self.__log('Conf URL: ' + the_url)
+        txdata = 'video_key=ch_' + tvstation_params  
+        req = request(the_url, txdata, self.USERAGENT)
+        handle = urlopen(req)     
+        html = handle.read() 
+        self.__log(html)
+        clip_pos   = html.find('clip')
+        start      = html.find('\'url\':', clip_pos  ) + 8
+        end        = html.find('\'', start  )
+        clip_url   = html[start:end]
+        self.__log('Finished getTVStreamDirect :' +clip_url)
         return clip_url
 
 #    returns the stream to  TV series episode
@@ -776,6 +838,19 @@ def playEpisodeStream(tv_username, tv_password, episode_params):
     html=''
     return 
 
+#    play episode stream TVs
+def playEpisodeStreamTVs(tv_username, tv_password, episode_params):
+    log('Start playEpisodeStreamTVs ')
+    MyTVbg = mytv(tv_username, tv_password)    
+    stream_url=MyTVbg.getTVStreamDirect(episode_params)
+    st = urllib.unquote(stream_url).decode('utf8') 
+    #xbmc.log('%s %s' % (stream_url, st) )
+    xbmc.Player().play(st)
+    log('URL: ' + stream_url)
+    log('Finished playEpisodeStreamTVs')
+    html=''
+    return 
+
 
 #    returns list of all live TV stations
 def showTVStations(tv_username, tv_password):
@@ -819,7 +894,7 @@ def showTVSerialSeasons(tv_username, tv_password, ser_url):
     log('Finished showTVSerialSeasons')
     return items
 
-#    returns list of series for specific season and TV serial
+#    returns list of series for specific season and TV serial from VOYO
 def showTVSeasonEpisodes(tv_username, tv_password, ses_url):
     log('Start showTVSeasonEpisodes')
     MyTVbg = mytv(tv_username, tv_password)
@@ -827,6 +902,13 @@ def showTVSeasonEpisodes(tv_username, tv_password, ses_url):
     log('Finished showTVSeasonEpisodes')
     return items
 
+#    returns list of series for specific colection serials from TVs
+def showTVSeasonEpisodesTVs(tv_username, tv_password, ses_url):
+    log('Start showTVSeasonEpisodesTVs')
+    MyTVbg = mytv(tv_username, tv_password)
+    items = MyTVbg.getTVSeasonEpisodesTVs(MyTVbg.openContentStream(mytv.MAINURL + '/'+ ses_url,''))
+    log('Finished showTVSeasonEpisodesTVs')
+    return items
 
 
 '''
