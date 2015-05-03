@@ -121,8 +121,10 @@ def main_menu():
                   'url': plugin.url_for('tvList',id_type='live_direct')})    
     items.append({'label': u'Телевизии - избор на качество и време',
                   'url': plugin.url_for('tvList',id_type='live')})
-    items.append({'label': u'Сериали',
+    items.append({'label': u'Сериали - VOYO',
                   'url': plugin.url_for('tvList',id_type='series')})
+    items.append({'label': u'Сериали - Телевизии',
+                  'url': plugin.url_for('tvList',id_type='seriesTV')})
    
     __log('main_menu finished')
     return plugin.add_items(items)
@@ -146,8 +148,14 @@ def tvList(id_type):
             for item in menulist:
                 items.append({'label': item[0],
                               'url':   plugin.url_for('directtvstation_playtv', ch_url=item[1]) }) 
-    if id_type =='series':#get a list with TV serials
+    if id_type =='series':#get a list with TV serials from VOYO
         menulist=mytvbg.showTVSerials(plugin.get_setting('username'), plugin.get_setting('password'))        
+        if menulist:         
+            for item in menulist:
+                items.append({'label': item[0],
+                              'url':   plugin.url_for('tvListSerialSeasons',ser_url=item[1]) })                     
+    if id_type =='seriesTV':#get a list with TV serials from TVs
+        menulist=mytvbg.showTVSerialsFromTVs(plugin.get_setting('username'), plugin.get_setting('password'))        
         if menulist:         
             for item in menulist:
                 items.append({'label': item[0],
