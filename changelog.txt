@@ -17,3 +17,6 @@ Changelog for XBMC mytvbg plugin created by boris.todorov@gmail.com
 
 1.0.7
 - Напасване към промени на сайта, които бяха счупили плъгина. Стриймовете вървят отново.
+
+1.0.8 
+- Нови сериали от телевизиите
