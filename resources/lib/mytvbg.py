@@ -342,7 +342,7 @@ class mytv:
         self.__log('Finished getTVSeasonEpisodes')
         return items
 
-#    returns list with Seasons  Episodes
+#    returns list with Seasons  Episodes from TVs
     def getTVSeasonEpisodesTVs(self, html):        
         self.__log('Start getTVSeasonEpisodesTVs')
         #self.__log('html')
@@ -372,6 +372,12 @@ class mytv:
                      #self.__log(lnk)
                      ses_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
                      ses_name  = lnk[nameStartPoint:nameEndPoint] +' - ' + lnk[nameStartPoint2:nameEndPoint2]#.decode('unicode_escape','ignore').encode('utf-8')
+
+                     #ToDO: find how to transform data-key and data-index to video-key
+                     #      until then use HD DVR
+                     ses_url = 'ch_' + ses_url
+                     ses_url = ses_url.replace('_dvr','_hd_dvr')
+                     ses_url = ses_url.replace('#','%23')
 
                      items.append((ses_name , ses_url ))
                      self.__log(ses_url + ' ' + ses_name)
@@ -517,7 +523,7 @@ class mytv:
         request = urllib2.Request
         the_url = self.MAINURL + '/player_config_g/config?video_key=ch_'+ tvstation_params
         self.__log('Conf URL: ' + the_url)
-        txdata = 'video_key=ch_' + tvstation_params  
+        txdata = 'video_key=' + tvstation_params  
         req = request(the_url, txdata, self.USERAGENT)
         handle = urlopen(req)     
         html = handle.read() 
