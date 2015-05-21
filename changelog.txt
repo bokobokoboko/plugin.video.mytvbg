@@ -20,3 +20,6 @@ Changelog for XBMC mytvbg plugin created by boris.todorov@gmail.com
 
 1.0.8 
 - Нови сериали от телевизиите
+
+1.0.11
+- Нова функционалност - филми, предавания ...
