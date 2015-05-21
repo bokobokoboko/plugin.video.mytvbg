@@ -53,7 +53,10 @@ class mytv:
     TVLISTURL  = MAINURL +'/channels' # URL to get list of all TV live stations
     CONTENTURL = MAINURL +'/channels' # Base URL of stream content for live chanels 
     TVSERIES   = MAINURL +'/shows-bg' # Series Library URL
-    TVSERIESTVS   = MAINURL +'/tv/program/genre/series/?r=title' # Series Library URL
+    TVSHOWS    = MAINURL +'/broadcasts-voyo' # Shows Library URL
+    TVSERIESTVS = MAINURL +'/tv/program/genre/series/?r=title' # Series Library URL
+    TVFILMSTVS  = MAINURL +'/tv/program/genre/movies/?r=title' #  FILMs  Library URL
+    TVSHOWSTVS  = MAINURL +'/tv/program/genre/broadcasts/?r=title' #  SHOWs Library URL
     ISLOGGEDINSTR = 'За да гледате, моля, регистрирайте се или влезте с потребителското си име и парола' #string to check if user is logged in
     #globals variables
     __cj__ = None
@@ -261,12 +264,89 @@ class mytv:
                         desc2Start= text.find('>', urlEnd) +1
                         desc2End  = text.find('</span>', desc2Start) ; 
                         self.__log(  text[urlStart:urlEnd]  + ' ' + text[descStart:descEnd] + ' ' + text[desc2Start:desc2End] )
-                        items.append((text[descStart:descEnd] + ' ' + text[desc2Start:desc2End] , text[urlStart:urlEnd]))
+                        items.append((text[descStart:descEnd] + ' - ' + text[desc2Start:desc2End] , text[urlStart:urlEnd]))
 
         if 0 == len(items):
             items.append(('Error no TV series items found (from TVs) NumPg:' + numPages, 'Error'))   
     
         self.__log('Finished getTVSerials-TVs')
+        return items
+
+#    return list with TV Serials from TVs
+    def getTVFilmsTVs(self, html):        
+        self.__log('Start getTVFilmsTVs +++++')
+        items = []
+        numPages = 0
+        pgStartPos = html.find('title="Ultimul" class="ppage" rel="') +35
+        if ( pgStartPos != -1 ):
+            pgEndPos   = html.find('"' , pgStartPos) 
+            numPages   = html[pgStartPos:pgEndPos]#.decode('unicode_escape','ignore').encode('utf-8')
+
+            for pg in range(1, int(numPages)):
+                text  = self.openContentStream(self.TVFILMSTVS + '&page=' + str(pg),'')
+                text  = text.replace('\r','')
+                text  = text.replace('\n','')
+                text  = text.replace('class="sparticle','\n##SRCH##')
+                lines = text.split('\n')
+                text = ''
+
+                for line in lines:
+                    startMarker = line.find('##SRCH##')
+                    if ( startMarker!=-1 ):
+                        endMarker = line.find('</a>' , startMarker)
+                        text = line[startMarker:endMarker] ;
+                        descStart = text.find('class="first-title">') +20
+                        descEnd   = text.find('</span>', descStart)
+                        urlStart  = text.find('onclick="location.href=') +25
+                        urlEnd    = text.find("'", urlStart) ;
+                        desc2Start= text.find('>', urlEnd) +1
+                        desc2End  = text.find('</span>', desc2Start) ; 
+                        self.__log(  text[urlStart:urlEnd]  + ' ' + text[descStart:descEnd] + ' ' + text[desc2Start:desc2End] )
+                        items.append((text[descStart:descEnd] + ' - ' + text[desc2Start:desc2End] , text[urlStart:urlEnd]))
+
+        if 0 == len(items):
+            items.append(('Error no TV series items found (from TVs) NumPg:' + numPages, 'Error'))   
+    
+        self.__log('Finished getTVFilmsTVs')
+        return items
+
+
+#    return list with TV Shows from TVs
+    def getTVShowsTVs(self, html):        
+        self.__log('Start getTVShowsTVs +++++')
+        items = []
+        numPages = 0
+        pgStartPos = html.find('title="Ultimul" class="ppage" rel="') +35
+        if ( pgStartPos != -1 ):
+            pgEndPos   = html.find('"' , pgStartPos) 
+            numPages   = html[pgStartPos:pgEndPos]#.decode('unicode_escape','ignore').encode('utf-8')
+
+            for pg in range(1, int(numPages)):
+                text  = self.openContentStream(self.TVSHOWSTVS + '&page=' + str(pg),'')
+                text  = text.replace('\r','')
+                text  = text.replace('\n','')
+                text  = text.replace('class="sparticle','\n##SRCH##')
+                lines = text.split('\n')
+                text = ''
+
+                for line in lines:
+                    startMarker = line.find('##SRCH##')
+                    if ( startMarker!=-1 ):
+                        endMarker = line.find('</a>' , startMarker)
+                        text = line[startMarker:endMarker] ;
+                        descStart = text.find('class="first-title">') +20
+                        descEnd   = text.find('</span>', descStart)
+                        urlStart  = text.find('onclick="location.href=') +25
+                        urlEnd    = text.find("'", urlStart) ;
+                        desc2Start= text.find('>', urlEnd) +1
+                        desc2End  = text.find('</span>', desc2Start) ; 
+                        self.__log(  text[urlStart:urlEnd]  + ' ' + text[descStart:descEnd] + ' ' + text[desc2Start:desc2End] )
+                        items.append((text[descStart:descEnd] + ' - ' + text[desc2Start:desc2End] , text[urlStart:urlEnd]))
+
+        if 0 == len(items):
+            items.append(('Error no TV series items found (from TVs) NumPg:' + numPages, 'Error'))   
+    
+        self.__log('Finished getTVShowsTVs')
         return items
 
 
@@ -882,6 +962,14 @@ def showTVSerials(tv_username, tv_password):
     log('Finished showTVSerials')
     return items
 
+
+def showTVShows(tv_username, tv_password):
+    log('Start showTVShows')
+    MyTVbg = mytv(tv_username, tv_password)
+    items = MyTVbg.getTVSerials(MyTVbg.openContentStream(mytv.TVSHOWS,''))
+    log('Finished showTVShows')
+    return items
+
 #    returns list of TV serial that come TVs
 def showTVSerialsFromTVs(tv_username, tv_password):
     log('Start showTVSerialsFromTVs ' + mytv.TVSERIESTVS)
@@ -891,6 +979,27 @@ def showTVSerialsFromTVs(tv_username, tv_password):
     items = MyTVbg.getTVSerialsTVs( html )   ##### Series from FVs
     log('Finished showTVSerialsFromTVs')
     return items
+
+#    returns list of Films that come TVs
+def showFilmsFromTVs(tv_username, tv_password):
+    log('Start showFilmsFromTVs ' + mytv.TVFILMSTVS)
+    MyTVbg = mytv(tv_username, tv_password)
+    #log( MyTVbg.openContentStream(mytv.TVFILMSTVS,'') )
+    html =  MyTVbg.openContentStream(mytv.TVFILMSTVS,'') 
+    items = MyTVbg.getTVFilmsTVs( html )   ##### Series from FVs
+    log('Finished showFilmsFromTVs')
+    return items
+
+#    returns list of TV shows that come TVs
+def showTVShowFromTVs(tv_username, tv_password):
+    log('Start showTVShowFromTVs ' + mytv.TVSHOWSTVS)
+    MyTVbg = mytv(tv_username, tv_password)
+    #log( MyTVbg.openContentStream(mytv.TVSHOWSTVS,'') )
+    html =  MyTVbg.openContentStream(mytv.TVSHOWSTVS,'') 
+    items = MyTVbg.getTVShowsTVs( html )   ##### Series from FVs
+    log('Finished showTVShowFromTVs')
+    return items
+
 
 #    returns list of seasons for specific TV serial
 def showTVSerialSeasons(tv_username, tv_password, ser_url):
