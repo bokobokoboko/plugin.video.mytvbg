@@ -233,6 +233,40 @@ class mytv:
         self.__log('Finished getTVSerials')
         return items
 
+#    return list with TV Shows from VOYO
+    def getTVShows(self, html):        
+        self.__log('Start getTVShows')
+        text  = html
+        text  = text.replace('\r','')
+        text  = text.replace('\n','')
+        lines = text.split('a>')
+        text = ''
+        for line in lines:
+            if ( line.find('class="article')!=-1 ):
+                text = text  + line                 
+            if ( line.find('<h2 itemprop="name">')!=-1 ):
+                text = text  + line                 
+        self.__log('Serials List Links: ' + text)
+        links = text.split('<a')
+        items = []
+        if links:
+            for lnk in links:
+                if ( lnk.find('" class="article')!=-1 ):
+                     urlStartPoint = lnk.find('href="') +6
+                     urlEndPoint   = lnk.find('"' , urlStartPoint) 
+                     nameStartPoint  = lnk.find('<h2>' ,urlEndPoint) +4
+                     nameEndPoint    = lnk.find('</h2>' , nameStartPoint) 
+                     ser_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
+                     ser_name    = lnk[nameStartPoint:nameEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
+
+                     items.append((ser_name, ser_url ))
+        
+        if 0 == len(items):
+            items.append(('Error no TV station items found', 'Error'))   
+
+        self.__log('Finished getTVShows')
+        return items
+
 
 #    return list with TV Serials from TVs
     def getTVSerialsTVs(self, html):        
@@ -393,6 +427,8 @@ class mytv:
         for line in lines:
             if ( line.find('" class="episod"')!=-1 ):
                 text = text  + '<aaa>' + line                 
+            if ( line.find('" class="sparticle"')!=-1 ): # use the same function to list TVShows
+                text = text  + '<aaa>' + line                 
         self.__log('Season Episodes List Links: ' + text)
         links = text.split('<aaa>')
         items = []
@@ -403,15 +439,22 @@ class mytv:
                      urlEndPoint     = lnk.find('"'       , urlStartPoint  ) 
                      nameStartPoint  = lnk.find('itemprop="name'     , urlEndPoint    ) + 16
                      nameEndPoint    = lnk.find('<span'    , nameStartPoint ) 
+                     if ( lnk.find('" class="sparticle"')!=-1 ): # use the same function to list TVShows
+                      nameEndPoint    = lnk.find('</span'    , nameStartPoint )
                      nameStartPoint2  = nameEndPoint + 26
-                     nameEndPoint2    = lnk.find('</span>'    , nameStartPoint ) 
+                     if ( lnk.find('" class="sparticle"')!=-1 ): # use the same function to list TVShows
+                      nameStartPoint2  = lnk.find('itemprop="description"' , nameEndPoint    ) + 23
+
+                     nameEndPoint2    = lnk.find('</span>'    , nameStartPoint2 ) 
                      titleStartPoint = lnk.find('title="' , nameEndPoint   ) + 7 
                      titleEndPoint   = lnk.find('"'       , titleStartPoint) 
 
 
                      ses_url   = lnk[urlStartPoint:urlEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
-                     ses_name  = lnk[nameStartPoint:nameEndPoint] + lnk[nameStartPoint2:nameEndPoint2]#.decode('unicode_escape','ignore').encode('utf-8')
+                     ses_name  = lnk[nameStartPoint:nameEndPoint] + ' ' +lnk[nameStartPoint2:nameEndPoint2]#.decode('unicode_escape','ignore').encode('utf-8')
                      ses_title = lnk[titleStartPoint:titleEndPoint]#.decode('unicode_escape','ignore').encode('utf-8')
+                     if ( lnk.find('" class="sparticle"')!=-1 ): # use the same function to list TVShows
+                      ses_title = '' # no title
 
                      items.append((ses_name + ' - ' + ses_title, ses_url ))
             
@@ -966,7 +1009,7 @@ def showTVSerials(tv_username, tv_password):
 def showTVShows(tv_username, tv_password):
     log('Start showTVShows')
     MyTVbg = mytv(tv_username, tv_password)
-    items = MyTVbg.getTVSerials(MyTVbg.openContentStream(mytv.TVSHOWS,''))
+    items = MyTVbg.getTVShows(MyTVbg.openContentStream(mytv.TVSHOWS,''))
     log('Finished showTVShows')
     return items
 
