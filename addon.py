@@ -121,10 +121,16 @@ def main_menu():
                   'url': plugin.url_for('tvList',id_type='live_direct')})    
     items.append({'label': u'Телевизии - избор на качество и време',
                   'url': plugin.url_for('tvList',id_type='live')})
-    items.append({'label': u'Сериали - VOYO',
+    items.append({'label': u'Каталог VOYO - Сериали ',
                   'url': plugin.url_for('tvList',id_type='series')})
-    items.append({'label': u'Сериали - Телевизии',
+    items.append({'label': u'Каталог VOYO - Предавания ',
+                  'url': plugin.url_for('tvList',id_type='show')})
+    items.append({'label': u'От програмата на телевизиите - Сериали ',
                   'url': plugin.url_for('tvList',id_type='seriesTV')})
+    items.append({'label': u'От програмата на телевизиите - Филми',
+                  'url': plugin.url_for('tvList',id_type='FilmiTV')})
+    items.append({'label': u'От програмата на телевизиите - Предавания',
+                  'url': plugin.url_for('tvList',id_type='ShowTV')})
    
     __log('main_menu finished')
     return plugin.add_items(items)
@@ -154,8 +160,26 @@ def tvList(id_type):
             for item in menulist:
                 items.append({'label': item[0],
                               'url':   plugin.url_for('tvListSerialSeasons',ser_url=item[1]) })                     
+    if id_type =='show':#get a list with TV shows from VOYO
+        menulist=mytvbg.showTVShows(plugin.get_setting('username'), plugin.get_setting('password'))        
+        if menulist:         
+            for item in menulist:
+                items.append({'label': item[0],
+                              'url':   plugin.url_for('tvListSerialSeasons',ser_url=item[1]) })                     
     if id_type =='seriesTV':#get a list with TV serials from TVs
         menulist=mytvbg.showTVSerialsFromTVs(plugin.get_setting('username'), plugin.get_setting('password'))        
+        if menulist:         
+            for item in menulist:
+                items.append({'label': item[0],
+                              'url':   plugin.url_for('tvListSeasonEpisodesTVs',ses_url=item[1]) })                     
+    if id_type =='FilmiTV':#get a list with Films from TVs
+        menulist=mytvbg.showFilmsFromTVs(plugin.get_setting('username'), plugin.get_setting('password'))        
+        if menulist:         
+            for item in menulist:
+                items.append({'label': item[0],
+                              'url':   plugin.url_for('tvListSeasonEpisodesTVs',ses_url=item[1]) })                     
+    if id_type =='ShowTV':#get a list with Shows from TVs
+        menulist=mytvbg.showTVShowFromTVs(plugin.get_setting('username'), plugin.get_setting('password'))        
         if menulist:         
             for item in menulist:
                 items.append({'label': item[0],
