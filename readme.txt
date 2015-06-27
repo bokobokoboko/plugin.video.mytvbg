@@ -20,12 +20,12 @@ Currently supported functions are:
  1. On-line TV chanels
  2. Back in time offseted TV chanels - fixed offsets, max -12 hours
  3. TV serials
+ 4. Recorded show programs - http://mytv.bg/broadcasts
 
 Not supported functions (TODO list)
- 1. Recorded show programs - http://mytv.bg/broadcasts
- 2. News - http://mytv.bg/news
- 3. Flexable time shifts with minutes precision
- 4. Full TV program for all TV chanels - http://mytv.bg/tv_program
+ 1. News - http://mytv.bg/news
+ 2. Flexable time shifts with minutes precision
+ 3. Full TV program for all TV chanels - http://mytv.bg/tv_program
  
 This plugin currently can be used only outside Bulgaria. http://mytv.bg/countries
 
