@@ -1,3 +1,9 @@
+!!!  Important !!!
+New plugin for MyTV :
+https://github.com/sasbass/plugin.video.mytv_bg
+
+
+------------------------------------------------------------------------------------------
 Readme for Kodi (XMBC) mytvbg plugin created boris.todorov@gmail.com
 
 I created this addon to watch MyTV.bg (Voyo) on my Ubuntu media station.
